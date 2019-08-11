@@ -6,6 +6,6 @@ namespace Core.Interface
 {
     public interface IServiceTest
     {
-        void Show();
+        void Show(string a, string b);
     }
 }

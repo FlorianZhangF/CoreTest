@@ -19,7 +19,7 @@ namespace Core.Web.Controllers
         public IActionResult Index()
         {
             _ilogger.LogDebug("Home Index Log");
-            _serviceTest.Show();
+            _serviceTest.Show("stra", "strb");
             return View();
         }
 

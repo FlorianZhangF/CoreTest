@@ -60,6 +60,8 @@ namespace Core.Web
 
             //实例一个容器
             ContainerBuilder containerBuilder = new ContainerBuilder();
+            //注册AOP
+            containerBuilder.Register(context => new CustomAutofacAOP(context));
             //注册服务
             containerBuilder.RegisterModule<CustomAutofacModule>();
             //Autofac接管默认IOC容器的其他工作，包括实例化控制器
