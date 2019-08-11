@@ -13,6 +13,7 @@ namespace Core.Web.Utility
     {
         protected override void Load(ContainerBuilder builder)
         {
+            //IOC注册
             builder.RegisterType<ServiceTest>().As<IServiceTest>().SingleInstance()//注册
                 .PropertiesAutowired().EnableInterfaceInterceptors().InterceptedBy(typeof(CustomAutofacAOP));//指定AOP
         }

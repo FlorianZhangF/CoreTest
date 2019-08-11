@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Core.Web.Models;
 using Microsoft.Extensions.Logging;
 using Core.Interface;
+using Core.Utility.Filters;
 
 namespace Core.Web.Controllers
 {
@@ -16,8 +17,10 @@ namespace Core.Web.Controllers
         {
         }
 
+        [ServiceFilter(typeof(CustomActionFilterAttribute))]
         public IActionResult Index()
         {
+            int i = Convert.ToInt16("sss");
             _ilogger.LogDebug("Home Index Log");
             _serviceTest.Show("stra", "strb");
             return View();

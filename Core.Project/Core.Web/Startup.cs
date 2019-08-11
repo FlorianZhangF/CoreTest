@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Core.Utility.Filters;
 using Core.Web.Utility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -57,6 +58,15 @@ namespace Core.Web
             //加入Session支持
             services.AddSession();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //加入全局异常Filter
+            services.AddMvc(option =>
+            {
+                option.Filters.Add(typeof(CustomExceptionFilterAttribute));
+            });
+
+            //指定使用ServiceFilter标记的特性
+            services.AddScoped<CustomActionFilterAttribute>();
 
             //实例一个容器
             ContainerBuilder containerBuilder = new ContainerBuilder();

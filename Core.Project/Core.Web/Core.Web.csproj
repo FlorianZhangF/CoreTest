@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core.Interface\Core.Interface.csproj" />
     <ProjectReference Include="..\Core.Service\Core.Service.csproj" />
+    <ProjectReference Include="..\Core.Utility\Core.Utility.csproj" />
   </ItemGroup>
 
 
