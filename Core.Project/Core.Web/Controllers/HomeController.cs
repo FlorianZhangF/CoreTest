@@ -13,8 +13,13 @@ namespace Core.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        public HomeController(ILoggerFactory factory, ILogger<BaseController> ilogger, IServiceTest serviceTest) : base(factory, ilogger, serviceTest)
+        public HomeController(ILoggerFactory factory, ILogger<BaseController> ilogger, IServiceTest serviceTest, IEnumerable<IServiceTest> serviceTests) : base(factory, ilogger, serviceTest)
         {
+            //这边可以直接注入迭代器IEnumerable<IServiceTest>，获取IServiceTest的所有实现的集合
+            foreach (var service in serviceTests)
+            {
+                service.Show("aa", "bb");
+            }
         }
 
         [ServiceFilter(typeof(CustomActionFilterAttribute))]

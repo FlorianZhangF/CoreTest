@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Autofac.Configuration;
 using Autofac.Extensions.DependencyInjection;
 using Core.Utility.Filters;
 using Core.Web.Utility;
@@ -62,7 +63,10 @@ namespace Core.Web
             //加入全局异常Filter
             services.AddMvc(option =>
             {
+                //异常处理Filter
                 option.Filters.Add(typeof(CustomExceptionFilterAttribute));
+                //ResourceFilter
+                option.Filters.Add(typeof(CustomResourceFIlterAttribute));
             });
 
             //指定使用ServiceFilter标记的特性
@@ -70,12 +74,32 @@ namespace Core.Web
 
             //实例一个容器
             ContainerBuilder containerBuilder = new ContainerBuilder();
-            //注册AOP
-            containerBuilder.Register(context => new CustomAutofacAOP(context));
-            //注册服务
-            containerBuilder.RegisterModule<CustomAutofacModule>();
             //Autofac接管默认IOC容器的其他工作，包括实例化控制器
             containerBuilder.Populate(services);
+
+            #region 直接注册服务
+            ////注册AOP
+            //containerBuilder.Register(context => new CustomAutofacAOP(context));
+            ////注册服务
+            //containerBuilder.RegisterModule<CustomAutofacModule>();
+            #endregion
+
+            #region 根据配置文件注册服务
+            //Autofac也可以用配置文件注入
+            IConfigurationBuilder config = new ConfigurationBuilder();
+            //读取配置文件
+            config.AddJsonFile("autofac.json");
+            // Register the ConfigurationModule with Autofac. 
+            IConfigurationRoot configBuild = config.Build();
+            //读取配置文件里配置需要注册的服务
+            var module = new ConfigurationModule(configBuild);
+            //注册服务
+            containerBuilder.RegisterModule(module);
+            #endregion
+
+            //可以获取到一个接口的所有实现
+            //IEnumerable<IServiceTest> testServices = container.Resolve<IEnumerable<IServiceTest>>();
+
             //返回需要的provider
             IContainer container = containerBuilder.Build();
 

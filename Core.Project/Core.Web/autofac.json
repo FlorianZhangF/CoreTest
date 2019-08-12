@@ -1,0 +1,15 @@
+﻿{
+  "defaultAssembly": "Core.Interface", // 抽象所在的程序集名称
+  "components": [
+    {
+      "type": "Core.Service.ServiceTest,Core.Service", // 接口的实现类 全名称
+      "services": [
+        {
+          "type": "Core.Interface.IServiceTest" // 接口的全名称
+        }
+      ],
+      "instanceScope": "single-instance",
+      "injectProperties": true
+    }
+  ]
+}
