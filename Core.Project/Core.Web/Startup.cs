@@ -6,6 +6,7 @@ using Autofac;
 using Autofac.Configuration;
 using Autofac.Extensions.DependencyInjection;
 using Core.Utility.Filters;
+using Core.Utility.Middlewares;
 using Core.Web.Utility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -123,6 +124,62 @@ namespace Core.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //根据条件指定中间件，没有next()
+            app.Map("/Test", builder =>
+             {
+                 builder.Use(async (context, next) =>
+                 {
+                     await context.Response.WriteAsync($"Test text");
+                     //await next();
+                 });
+             });
+            
+            app.MapWhen(context =>
+            {
+                return context.Request.Query.ContainsKey("Name");
+            }, builder =>
+            {
+                builder.Use(async (context, next) =>
+                {
+                    await context.Response.WriteAsync($"Name text");
+                    //await next();
+                });
+            });
+
+            //使用外部定义的中间件
+            app.UseMiddleware<UseMiddleware>();
+
+            //自定义中间件，带next会往下执行，不带就是终结器
+            app.Use(next =>
+            {
+                return new RequestDelegate(async context =>
+                {
+                    await context.Response.WriteAsync("Use1 text start");
+                    await next.Invoke(context);
+                    await context.Response.WriteAsync("Use1 text end");
+                });
+            });
+
+            app.Use(next =>
+            {
+                return new RequestDelegate(async context =>
+                {
+                    await context.Response.WriteAsync("Use2 text start");
+                    await next.Invoke(context);
+                    await context.Response.WriteAsync("Use2 text end");
+                });
+            });
+
+            app.Use(next =>
+            {
+                return new RequestDelegate(async context =>
+                {
+                    await context.Response.WriteAsync("Use3 text start");
+                    //await next.Invoke(context);
+                    await context.Response.WriteAsync("Use3 text end");
+                });
+            });
 
             //使用Session
             app.UseSession();
